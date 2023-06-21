@@ -18,22 +18,13 @@
 <script>
 import { setAuth } from "@/common/helpers";
 
-import DefaultLayout from "@/layouts/DefaultLayout";
-import AppLayout from "@/layouts/AppLayout";
-import UserLayout from "@/layouts/UserLayout";
-
 export default {
   name: "App",
 
-  components: {
-    DefaultLayout,
-    AppLayout,
-    UserLayout,
-  },
-
   computed: {
     layout() {
-      return (this.$route.meta.layout ?? "Default") + "Layout";
+      const layout = (this.$route.meta.layout ?? "Default") + "Layout";
+      return () => import(`@/layouts/${layout}.vue`);
     },
   },
 

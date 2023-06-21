@@ -18,7 +18,7 @@ import SIDEBAR_MENU from "@/common/enums/sidebarMenu";
 
 Vue.use(Vuex);
 
-const state = () => ({
+export const state = () => ({
   notifications: [],
   dough: [],
   sizes: [],
@@ -28,7 +28,7 @@ const state = () => ({
   sidebarMenu: SIDEBAR_MENU,
 });
 
-const getters = {
+export const getters = {
   pizza(state) {
     return {
       doughes: state.dough,
@@ -69,7 +69,7 @@ const getters = {
 
   ingredientsText: (state, getters) => (ingredients) => {
     const tmpIngredients = [];
-
+    // TODO: убрать "name", "price", "value"
     // TODO: разные ключи (id | ingredientId) -> поправить
     ingredients.forEach(({ ingredientId }) => {
       const label = getters.getAttrItemEntity(
@@ -84,7 +84,7 @@ const getters = {
   },
 };
 
-const actions = {
+export const actions = {
   async init({ dispatch }) {
     dispatch("fetchDough");
     dispatch("fetchSizes");
@@ -157,7 +157,7 @@ const actions = {
   },
 };
 
-const mutations = {
+export const mutations = {
   [SET_ENTITY](state, { module, entity, value }) {
     if (module) {
       state[module][entity] = value;

@@ -58,7 +58,7 @@ describe("CartProductSelector", () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
+    wrapper?.destroy();
   });
 
   it("Is rendered", () => {

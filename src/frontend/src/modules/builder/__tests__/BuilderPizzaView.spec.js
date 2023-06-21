@@ -2,18 +2,16 @@ import { shallowMount } from "@vue/test-utils";
 
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView";
 
-import pizza from "@/static/pizza.json";
+import { dough, sauces, sizes } from "@/static/pizza.json";
+import { ingredientsFormatArr } from "@/common/helpers";
 
 describe("BuilderPizzaView", () => {
-  const propsData = {
-    dough: pizza.dough[0],
-    sauce: pizza.sauces[0],
-    size: pizza.sizes[0],
-    ingredients: [],
+  let propsData = {
+    dough: dough[0],
+    sauce: sauces[0],
+    size: sizes[0],
+    ingredients: ingredientsFormatArr(0, 2),
   };
-
-  // TODO_CALL:
-  const computed = {};
 
   let wrapper;
 
@@ -22,16 +20,62 @@ describe("BuilderPizzaView", () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
+    wrapper?.destroy();
   });
 
-  it("No ingredients result", () => {
-    createComponent({ propsData });
-    expect(123).toBe(123);
+  it("Computed dough & sauce values", () => {
+    const localThis = {
+      dough: {
+        id: 1,
+      },
+      sauce: {
+        id: 1,
+      },
+    };
+
+    expect(BuilderPizzaView.computed.doughValue.call(localThis)).toBe("small");
+    expect(BuilderPizzaView.computed.sauceValue.call(localThis)).toBe("tomato");
+    expect(
+      BuilderPizzaView.computed.foundationClass.call({
+        ...localThis,
+        doughValue: "small",
+        sauceValue: "tomato",
+      })
+    ).toBe("pizza--foundation--small-tomato");
   });
 
-  it("Some ingredients result", () => {
+  it("Renders ingredients if there are selected ingredients", () => {
     createComponent({ propsData });
-    expect(123).toBe(123);
+    const ingredient = wrapper.find(".pizza__filling");
+
+    expect(ingredient.exists()).toBeTruthy();
+  });
+
+  it("Renders specific classes if there are ingredients with quantity equal 2", () => {
+    propsData = {
+      dough: dough[0],
+      sauce: sauces[0],
+      size: sizes[0],
+      ingredients: ingredientsFormatArr(1, 2),
+    };
+
+    createComponent({ propsData });
+    const secondIngredient = wrapper.find(".pizza__filling--second");
+
+    expect(secondIngredient.exists())?.toBeTruthy();
+  });
+
+  it("Renders specific classes if there are ingredients with quantity equal 3", () => {
+    propsData = {
+      dough: dough[0],
+      sauce: sauces[0],
+      size: sizes[0],
+      ingredients: ingredientsFormatArr(2, 3),
+    };
+
+    createComponent({ propsData });
+    const thirdIngredient = wrapper.find(".pizza__filling--third");
+
+    expect(thirdIngredient.exists())?.toBeTruthy();
   });
 });
