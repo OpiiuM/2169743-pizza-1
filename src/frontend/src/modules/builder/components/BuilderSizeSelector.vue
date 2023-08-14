@@ -1,67 +1,31 @@
 <template>
-  <label class="diameter__input" :class="sizeClass">
-    <input
-      type="radio"
-      name="diameter"
-      :value="sizeValue"
-      :checked="selected === label"
-      class="visually-hidden"
-      @input="handleInput"
-    />
-    <span>{{ label }}</span>
-  </label>
+  <div class="content__diameter">
+    <div class="sheet">
+      <h2 class="title title--small sheet__title">Выберите размер</h2>
+
+      <div class="sheet__content diameter">
+        <AppRadio
+          v-for="size in items"
+          :key="size.id"
+          v-model="modelValue"
+          :value="size.id"
+          :subtitle="size.name"
+          name="diameter"
+          class="diameter__input"
+          :class="`diameter__input--${size.value}`"
+          is-image
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import radioMixin from "@/modules/builder/mixins/radioMixin";
+
 export default {
   name: "BuilderSizeSelector",
 
-  props: {
-    label: {
-      type: String,
-      required: true,
-      validator(value) {
-        return !!value.trim();
-      },
-    },
-
-    selected: {
-      type: String,
-      required: true,
-      validator(value) {
-        return !!value.trim();
-      },
-    },
-  },
-
-  computed: {
-    sizeValue() {
-      let value = "";
-
-      switch (this.label) {
-        case "32 см":
-          value = "normal";
-          break;
-        case "45 см":
-          value = "big";
-          break;
-        default:
-          value = "small";
-          break;
-      }
-
-      return value;
-    },
-
-    sizeClass() {
-      return `diameter__input--${this.sizeValue}`;
-    },
-  },
-
-  methods: {
-    handleInput() {
-      this.$emit("input", this.label);
-    },
-  },
+  mixins: [radioMixin],
 };
 </script>

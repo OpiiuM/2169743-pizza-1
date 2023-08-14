@@ -1,4 +1,4 @@
-export const appSelectorItem = {
+const appSelectorItem = {
   field: {
     name: "pizza_name",
     placeholder: "Введите название пиццы",
@@ -10,7 +10,7 @@ export const appSelectorItem = {
   },
 };
 
-export const profileAddressEdit = {
+const profileAddressEdit = {
   field: {
     name: {
       label: "Название адреса*",
@@ -50,7 +50,7 @@ export const profileAddressEdit = {
   },
 };
 
-export const pageCart = {
+const pageCart = {
   phone: {
     label: "Контактный телефон:",
     type: "text",
@@ -82,7 +82,7 @@ export const pageCart = {
   },
 };
 
-export const pageLogin = {
+const pageLogin = {
   email: {
     tag: "label",
     label: "E-mail",
@@ -97,4 +97,11 @@ export const pageLogin = {
     name: "pass",
     placeholder: "***********",
   },
+};
+
+export default {
+  appSelectorItem,
+  profileAddressEdit,
+  pageCart,
+  pageLogin,
 };

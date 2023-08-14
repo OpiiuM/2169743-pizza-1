@@ -1,0 +1,17 @@
+export default {
+  1: "mushrooms",
+  2: "cheddar",
+  3: "tomatoes",
+  4: "ham",
+  5: "salami",
+  6: "bacon",
+  7: "salmon",
+  8: "ananas",
+  9: "onion",
+  10: "chile",
+  11: "mozzarella",
+  12: "jalapeno",
+  13: "olives",
+  14: "blue_cheese",
+  15: "parmesan",
+};

@@ -1,94 +1,53 @@
 <template>
-  <div
-    class="pizza"
-    :class="foundationClass"
-    data-test="pizza-wrapper"
-    @dragover.prevent
-    @drop.prevent="drop"
-  >
-    <div class="pizza__wrapper">
-      <transition-group
-        name="filling"
-        appear
-        enter-active-class="animate__animated animate__fadeIn"
-        leave-active-class="animate__animated animate__fadeOut"
-      >
-        <div
-          v-for="{ value, quantity } in ingredients"
-          :key="value"
-          class="pizza__filling"
-          :class="fillingClass(value, quantity)"
-        />
-      </transition-group>
+  <div class="content__pizza">
+    <AppInput
+      v-model="pizzaName"
+      tag="label"
+      label="Название пиццы"
+      hidden-label
+      type="text"
+      name="pizza_name"
+      placeholder="Введите название пиццы"
+    />
+
+    <div class="content__constructor">
+      <div class="pizza pizza--foundation--big-tomato">
+        <div class="pizza__wrapper">
+          <div class="pizza__filling pizza__filling--ananas"></div>
+          <div class="pizza__filling pizza__filling--bacon"></div>
+          <div class="pizza__filling pizza__filling--cheddar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content__result">
+      <p>Итого: {{ price }} ₽</p>
+      <button type="submit" class="button" disabled>Готовьте!</button>
     </div>
   </div>
 </template>
 
 <script>
-import DOUGH from "@/common/enums/dough";
-import SAUCE from "@/common/enums/sauce";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "BuilderPizzaView",
 
-  props: {
-    dough: {
-      type: Object,
-      required: true,
-    },
-
-    sauce: {
-      type: Object,
-      required: true,
-    },
-
-    size: {
-      type: Object,
-      required: true,
-    },
-
-    ingredients: {
-      type: Array,
-      default: () => [],
-    },
-  },
-
   computed: {
-    doughValue() {
-      return this.dough?.id === DOUGH.small ? "small" : "big";
-    },
+    ...mapState("Builder", ["name", "price"]),
 
-    sauceValue() {
-      return this.sauce?.id === SAUCE.tomato ? "tomato" : "creamy";
-    },
-
-    foundationClass() {
-      return `pizza--foundation--${this.doughValue}-${this.sauceValue}`;
+    pizzaName: {
+      get() {
+        return this.name;
+      },
+      set(value) {
+        this.SET_BUILDER_NAME(value);
+      },
     },
   },
 
   methods: {
-    fillingClass(name, time) {
-      let fillingClass = `pizza__filling--${name}`;
-
-      switch (time) {
-        case 2:
-          fillingClass += " pizza__filling--second";
-          break;
-        case 3:
-          fillingClass += " pizza__filling--third";
-          break;
-      }
-
-      return fillingClass;
-    },
-
-    drop(e) {
-      const dataItem = e.dataTransfer.getData("ingredientData");
-      // ! REMOVE
-      console.log(dataItem);
-      this.$emit("drop", dataItem);
-    },
+    ...mapMutations("Builder", ["SET_BUILDER_NAME"]),
   },
 };
 </script>

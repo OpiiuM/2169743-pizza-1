@@ -1,58 +1,25 @@
 <template>
   <div class="ingredients__sauce">
-    <slot />
+    <p>Основной соус:</p>
 
-    <AppRadioButton
-      v-for="item in items"
-      :key="item.id"
-      class="ingredients__input"
+    <AppRadio
+      v-for="sauce in items"
+      :key="sauce.id"
+      v-model="modelValue"
+      :value="sauce.id"
+      :subtitle="sauce.name"
       name="sauce"
-      :value="sauceValue(item.name)"
-      :label="item.name"
-      :selected="selected"
-      data-test="sauce-radio"
-      @input="handleInput"
+      class="ingredients__input"
     />
   </div>
 </template>
 
 <script>
-import CREAM from "@/common/enums/cream";
+import radioMixin from "@/modules/builder/mixins/radioMixin";
 
 export default {
   name: "BuilderSauceSelector",
 
-  props: {
-    items: {
-      type: Array,
-      required: true,
-    },
-
-    selected: {
-      type: String,
-      required: true,
-      validator(value) {
-        return !!value.trim();
-      },
-    },
-  },
-
-  methods: {
-    sauceValue(label) {
-      let value = "";
-
-      for (const key in CREAM) {
-        if (label === CREAM[key]) {
-          value = key;
-        }
-      }
-
-      return value;
-    },
-
-    handleInput(dataItem) {
-      this.$emit("select", dataItem);
-    },
-  },
+  mixins: [radioMixin],
 };
 </script>

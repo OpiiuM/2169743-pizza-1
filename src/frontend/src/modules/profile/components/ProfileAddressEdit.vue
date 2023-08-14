@@ -77,7 +77,7 @@
 <script>
 import validator from "@/common/mixins/validator";
 
-import { profileAddressEdit } from "@/common/enums/inputConfig";
+import { profileAddressEdit } from "@/common/enums";
 
 export default {
   name: "ProfileAddressEdit",

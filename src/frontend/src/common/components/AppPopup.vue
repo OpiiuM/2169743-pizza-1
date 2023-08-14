@@ -17,8 +17,8 @@
         <a
           href="#"
           class="button"
-          @click.prevent="handleClick"
           data-test="buttonComplete"
+          @click.prevent="handleClick"
         >
           Отлично, я жду!
         </a>
