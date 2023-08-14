@@ -5,7 +5,12 @@ import {
   ReadOnlyApiService,
 } from "@/services/api.service";
 import { SET_ENTITY } from "@/store/mutations-types";
-import users from "@/static/user.json";
+
+import misc from "@/static/misc.json";
+import pizza from "@/static/pizza.json";
+import user from "@/static/user.json";
+
+import INGREDIENT from "@/common/enums/ingredient";
 
 export const capitalize = (string) => {
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
@@ -38,7 +43,7 @@ export const authenticateUser = (store) => {
     {
       module: "Auth",
       entity: "user",
-      value: users[0],
+      value: user,
     },
     { root: true }
   );
@@ -48,6 +53,94 @@ export const authenticateUser = (store) => {
       module: "Auth",
       entity: "isAuthenticated",
       value: true,
+    },
+    { root: true }
+  );
+};
+
+export const ingredientVal = (label) => {
+  let value = "";
+
+  for (const key in INGREDIENT) {
+    if (label === INGREDIENT[key]) {
+      value = key;
+    }
+  }
+
+  return value;
+};
+
+export const ingredientsFormatArr = (start = 0, end = 1) => {
+  return pizza.ingredients.slice(start, end).map((el) => {
+    el.quantity = el.id >= 3 ? 3 : el.id;
+    el.value = ingredientVal(el.name);
+
+    return el;
+  });
+};
+
+export const createPizza = (store) => {
+  store.commit(
+    SET_ENTITY,
+    {
+      entity: "dough",
+      value: pizza.dough,
+    },
+    { root: true }
+  );
+  store.commit(
+    SET_ENTITY,
+    {
+      entity: "sizes",
+      value: pizza.sizes,
+    },
+    { root: true }
+  );
+  store.commit(
+    SET_ENTITY,
+    {
+      entity: "sauces",
+      value: pizza.sauces,
+    },
+    { root: true }
+  );
+  store.commit(
+    SET_ENTITY,
+    {
+      entity: "ingredients",
+      value: pizza.ingredients,
+    },
+    { root: true }
+  );
+};
+
+export const createMisc = (store) => {
+  store.commit(
+    SET_ENTITY,
+    {
+      entity: "misc",
+      value: misc,
+    },
+    { root: true }
+  );
+};
+
+const builder = {
+  dough: pizza.dough[0],
+  ingredients: ingredientsFormatArr(0, 2),
+  sauce: pizza.sauces[0],
+  size: pizza.sizes[0],
+  name: "testBuilder",
+  price: 766,
+};
+
+export const createBuilder = (store) => {
+  store.commit(
+    SET_ENTITY,
+    {
+      module: "Builder",
+      entity: "builder",
+      value: builder,
     },
     { root: true }
   );

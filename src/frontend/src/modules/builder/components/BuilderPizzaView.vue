@@ -2,6 +2,7 @@
   <div
     class="pizza"
     :class="foundationClass"
+    data-test="pizza-wrapper"
     @dragover.prevent
     @drop.prevent="drop"
   >
@@ -84,6 +85,8 @@ export default {
 
     drop(e) {
       const dataItem = e.dataTransfer.getData("ingredientData");
+      // ! REMOVE
+      console.log(dataItem);
       this.$emit("drop", dataItem);
     },
   },

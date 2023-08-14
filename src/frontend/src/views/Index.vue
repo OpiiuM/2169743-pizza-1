@@ -1,7 +1,12 @@
 <template>
   <div class="page">
     <main class="content">
-      <form action="#" method="post" @submit.prevent="handleSubmit">
+      <form
+        action="#"
+        method="post"
+        @submit.prevent="handleSubmit"
+        data-test="form"
+      >
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
@@ -91,7 +96,7 @@ import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngr
 import generateId from "@/common/mixins/generateId";
 
 export default {
-  name: "IndexHome",
+  name: "Index",
 
   components: {
     BuilderDoughSelector,
