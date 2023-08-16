@@ -1,4 +1,4 @@
-export { default as doughValues } from "./pizza/dough";
+export { default as doughEnums } from "./pizza/dough";
 export { default as sizeValues } from "./pizza/size";
 export { default as sauceValues } from "./pizza/sauce";
 export { default as ingredientValues } from "./pizza/ingredient";

@@ -1,53 +1,52 @@
 <template>
-  <div class="content__pizza">
-    <AppInput
-      v-model="pizzaName"
-      tag="label"
-      label="Название пиццы"
-      hidden-label
-      type="text"
-      name="pizza_name"
-      placeholder="Введите название пиццы"
-    />
-
-    <div class="content__constructor">
-      <div class="pizza pizza--foundation--big-tomato">
+  <div class="content__constructor">
+    <AppDrop @drop="$emit('drop', $event.id)">
+      <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
         <div class="pizza__wrapper">
-          <div class="pizza__filling pizza__filling--ananas"></div>
-          <div class="pizza__filling pizza__filling--bacon"></div>
-          <div class="pizza__filling pizza__filling--cheddar"></div>
+          <transition-group name="scale">
+            <div
+              v-for="item in ingredients"
+              :key="item.id"
+              class="pizza__filling"
+              :class="fillingClass(item)"
+            />
+          </transition-group>
         </div>
       </div>
-    </div>
-
-    <div class="content__result">
-      <p>Итого: {{ price }} ₽</p>
-      <button type="submit" class="button" disabled>Готовьте!</button>
-    </div>
+    </AppDrop>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+const TWO_INGREDIENTS = 2;
+const THREE_INGREDIENTS = 3;
 
 export default {
   name: "BuilderPizzaView",
 
-  computed: {
-    ...mapState("Builder", ["name", "price"]),
-
-    pizzaName: {
-      get() {
-        return this.name;
-      },
-      set(value) {
-        this.SET_BUILDER_NAME(value);
-      },
+  props: {
+    dough: {
+      type: String,
+      default: "",
+    },
+    sauce: {
+      type: String,
+      default: "",
+    },
+    ingredients: {
+      type: Array,
+      default: () => [],
     },
   },
 
   methods: {
-    ...mapMutations("Builder", ["SET_BUILDER_NAME"]),
+    fillingClass({ value, quantity }) {
+      return [
+        `pizza__filling--${value}`,
+        quantity === TWO_INGREDIENTS && "pizza__filling--second",
+        quantity === THREE_INGREDIENTS && "pizza__filling--third",
+      ];
+    },
   },
 };
 </script>

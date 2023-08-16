@@ -1,5 +1,5 @@
 import {
-  doughValues,
+  doughEnums,
   sizeValues,
   sauceValues,
   ingredientValues,
@@ -23,7 +23,8 @@ export const normalizeData = {
   normalizeDough(dough) {
     return {
       ...dough,
-      value: doughValues[dough.id],
+      value: doughEnums.values[dough.id],
+      size: doughEnums.sizes[dough.id],
     };
   },
   normalizeSize(size) {
