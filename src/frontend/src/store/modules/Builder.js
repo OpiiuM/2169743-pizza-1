@@ -1,17 +1,12 @@
 import {
   CLEAR_STATE,
-  SET_DOUGH,
-  SET_INGREDIENTS,
-  SET_SAUCE,
-  SET_SIZE,
-  SET_BUILDER,
   SET_INGREDIENT_QUANTITY,
-  SET_BUILDER_NAME,
-  SET_BUILDER_PRICE,
   ADD_INGREDIENT,
   INCREMENT_INGREDIENT_QUANTITY,
 } from "@/store/mutations-types";
-import { addIngredient } from "@/common/helpers";
+import { builderStore } from "@/common/helpers";
+
+const { addIngredient, ingredientsQuantity, pizzaPrice } = builderStore;
 
 const setupState = () => ({
   dough: null,
@@ -19,7 +14,6 @@ const setupState = () => ({
   sauce: null,
   size: null,
   name: "",
-  price: 0,
 });
 
 const state = () => setupState();
@@ -34,14 +28,17 @@ const getters = {
     };
   },
 
+  // TODO: check
   ingredientQuantities(state, getters, rootState) {
-    return rootState.ingredients?.reduce((acc, val) => {
-      acc[val.id] =
-        state.ingredients.find((item) => item.ingredientId === val.id)
-          ?.quantity ?? 0;
+    return ingredientsQuantity(rootState, state);
 
-      return acc;
-    }, {});
+    // return rootState.ingredients?.reduce((acc, val) => {
+    //   acc[val.id] =
+    //     state.ingredients.find((item) => item.ingredientId === val.id)
+    //       ?.quantity ?? 0;
+
+    //   return acc;
+    // }, {});
   },
 
   ingredientsExtended(state, getters, rootState) {
@@ -56,29 +53,16 @@ const getters = {
         };
       });
   },
+
+  price: (state, getters, rootState) => pizzaPrice(rootState, state),
 };
 
-// TODO: убрать "builder"
 const mutations = {
   [CLEAR_STATE](state) {
     Object.assign(state, setupState());
   },
 
-  [SET_BUILDER](state, payload) {
-    state.builder = payload;
-  },
-
-  [SET_DOUGH](state, payload) {
-    state.builder.dough = payload;
-  },
-
-  [SET_INGREDIENTS](state, payload) {
-    state.builder.ingredients = [...state.builder.ingredients, payload];
-  },
-
-  [ADD_INGREDIENT](state, { ingredientId }) {
-    addIngredient(state, ingredientId);
-  },
+  [ADD_INGREDIENT]: (state, { ingredientId }) => addIngredient(state, ingredientId),
 
   [SET_INGREDIENT_QUANTITY](state, { ingredientId, count }) {
     const ingredientIdx = state.ingredients.findIndex(
@@ -111,37 +95,6 @@ const mutations = {
     }
 
     state.ingredients[ingredientIdx].quantity++;
-  },
-
-  // [SET_INGREDIENT_QUANTITY](state, { index, hasState, isDecrease }) {
-  //   if (hasState && isDecrease) {
-  //     state.builder.ingredients[index].quantity -= 1;
-
-  //     if (state.builder.ingredients[index].quantity === 0) {
-  //       state.builder.ingredients.splice(index, 1);
-  //     }
-  //   } else {
-  //     if (state.builder.ingredients[index].quantity < 3) {
-  //       state.builder.ingredients[index].quantity += 1;
-  //     }
-  //   }
-  // },
-
-  [SET_SAUCE](state, payload) {
-    state.sauce = payload;
-  },
-
-  [SET_SIZE](state, payload) {
-    state.size = payload;
-  },
-
-  [SET_BUILDER_NAME](state, payload) {
-    console.log("SET_BUILDER_NAME");
-    state.name = payload;
-  },
-
-  [SET_BUILDER_PRICE](state, payload) {
-    state.price = payload;
   },
 };
 

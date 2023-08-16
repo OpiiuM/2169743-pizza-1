@@ -44,8 +44,8 @@ export default {
   },
 
   computed: {
-    ...mapState("Builder", ["name", "price"]),
-    ...mapGetters("Builder", ["builder", "ingredientsExtended"]),
+    ...mapState("Builder", ["name"]),
+    ...mapGetters("Builder", ["builder", "ingredientsExtended", "price"]),
 
     pizzaName: {
       get() {

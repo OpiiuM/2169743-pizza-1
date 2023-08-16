@@ -47,13 +47,44 @@ export const normalizeData = {
   },
 };
 
-// TODO: вынести
-export const addIngredient = (state, ingredientId) => {
-  state.ingredients.push({
-    ingredientId,
-    quantity: 1,
-  });
+// TODO: this.ingrQuant
+export const builderStore = {
+  addIngredient(state, ingredientId) {
+    state.ingredients.push({
+      ingredientId,
+      quantity: 1,
+    });
+  },
+  ingredientsQuantity(rootData, pizza) {
+    return rootData.ingredients.reduce((acc, val) => {
+      acc[val.id] = pizza.ingredients.find(
+        (item) => (item.ingredientId === val.id)
+      )?.quantity ?? 0;
+
+      return acc;
+    }, {});
+  },
+  pizzaPrice(rootData, pizza) {
+    const ingredients = this.ingredientsQuantity(pizza);
+
+    const sizeMultiplier = rootData?.sizes.find((item) => item.id === pizza.sizeId)?.multiplier ?? 1;
+    const doughPrice = rootData?.doughs.find((item) => item.id === pizza.doughId)?.price ?? 0;
+    const saucePrice = rootData?.sauces.find((item) => item.id === pizza.sauceId)?.price ?? 0;
+    const ingredientPrice = rootData?.ingredients
+      .map((item) => ingredients[item.id] * item.price)
+      .reduce((acc, item) => acc + item, 0);
+
+    return (doughPrice + saucePrice + ingredientPrice) * sizeMultiplier;
+  },
 };
+
+// TODO: вынести
+// export const addIngredient = (state, ingredientId) => {
+//   state.ingredients.push({
+//     ingredientId,
+//     quantity: 1,
+//   });
+// };
 
 export const capitalize = (string) => {
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
