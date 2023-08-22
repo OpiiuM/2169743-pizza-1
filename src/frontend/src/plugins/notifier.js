@@ -1,4 +1,4 @@
-import notificationTypes from "@/common/enums/notificationTypes";
+import { notificationTypes } from "@/common/enums";
 
 export default class Notifier {
   #store;

@@ -1,4 +1,11 @@
-import resources from "@/common/enums/resources";
+import {
+  doughEnums,
+  sizeValues,
+  sauceValues,
+  ingredientValues,
+  resources,
+} from "@/common/enums";
+
 import {
   AuthApiService,
   CrudApiService,
@@ -10,7 +17,74 @@ import misc from "@/static/misc.json";
 import pizza from "@/static/pizza.json";
 import user from "@/static/user.json";
 
-import INGREDIENT from "@/common/enums/ingredient";
+// import INGREDIENT from "@/common/enums/ingredient";
+
+export const normalizeData = {
+  normalizeDough(dough) {
+    return {
+      ...dough,
+      value: doughEnums.values[dough.id],
+      size: doughEnums.sizes[dough.id],
+    };
+  },
+  normalizeSize(size) {
+    return {
+      ...size,
+      value: sizeValues[size.id],
+    };
+  },
+  normalizeSauce(sauce) {
+    return {
+      ...sauce,
+      value: sauceValues[sauce.id],
+    };
+  },
+  normalizeIngredient(idt) {
+    return {
+      ...idt,
+      value: ingredientValues[idt.id],
+    };
+  },
+};
+
+// TODO: this.ingrQuant
+export const builderStore = {
+  addIngredient(state, ingredientId) {
+    state.ingredients.push({
+      ingredientId,
+      quantity: 1,
+    });
+  },
+  ingredientsQuantity(rootData, pizza) {
+    return rootData.ingredients.reduce((acc, val) => {
+      acc[val.id] = pizza.ingredients.find(
+        (item) => (item.ingredientId === val.id)
+      )?.quantity ?? 0;
+
+      return acc;
+    }, {});
+  },
+  pizzaPrice(rootData, pizza) {
+    const ingredients = this.ingredientsQuantity(pizza);
+
+    const sizeMultiplier = rootData?.sizes.find((item) => item.id === pizza.sizeId)?.multiplier ?? 1;
+    const doughPrice = rootData?.doughs.find((item) => item.id === pizza.doughId)?.price ?? 0;
+    const saucePrice = rootData?.sauces.find((item) => item.id === pizza.sauceId)?.price ?? 0;
+    const ingredientPrice = rootData?.ingredients
+      .map((item) => ingredients[item.id] * item.price)
+      .reduce((acc, item) => acc + item, 0);
+
+    return (doughPrice + saucePrice + ingredientPrice) * sizeMultiplier;
+  },
+};
+
+// TODO: вынести
+// export const addIngredient = (state, ingredientId) => {
+//   state.ingredients.push({
+//     ingredientId,
+//     quantity: 1,
+//   });
+// };
 
 export const capitalize = (string) => {
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
@@ -58,26 +132,26 @@ export const authenticateUser = (store) => {
   );
 };
 
-export const ingredientVal = (label) => {
-  let value = "";
+// export const ingredientVal = (label) => {
+//   let value = "";
 
-  for (const key in INGREDIENT) {
-    if (label === INGREDIENT[key]) {
-      value = key;
-    }
-  }
+//   for (const key in INGREDIENT) {
+//     if (label === INGREDIENT[key]) {
+//       value = key;
+//     }
+//   }
 
-  return value;
-};
+//   return value;
+// };
 
-export const ingredientsFormatArr = (start = 0, end = 1) => {
-  return pizza.ingredients.slice(start, end).map((el) => {
-    el.quantity = el.id >= 3 ? 3 : el.id;
-    el.value = ingredientVal(el.name);
+// export const ingredientsFormatArr = (start = 0, end = 1) => {
+//   return pizza.ingredients.slice(start, end).map((el) => {
+//     el.quantity = el.id >= 3 ? 3 : el.id;
+//     el.value = ingredientVal(el.name);
 
-    return el;
-  });
-};
+//     return el;
+//   });
+// };
 
 export const createPizza = (store) => {
   store.commit(
@@ -125,23 +199,23 @@ export const createMisc = (store) => {
   );
 };
 
-const builder = {
-  dough: pizza.dough[0],
-  ingredients: ingredientsFormatArr(0, 2),
-  sauce: pizza.sauces[0],
-  size: pizza.sizes[0],
-  name: "testBuilder",
-  price: 766,
-};
+// const builder = {
+//   dough: pizza.dough[0],
+//   ingredients: ingredientsFormatArr(0, 2),
+//   sauce: pizza.sauces[0],
+//   size: pizza.sizes[0],
+//   name: "testBuilder",
+//   price: 766,
+// };
 
-export const createBuilder = (store) => {
-  store.commit(
-    SET_ENTITY,
-    {
-      module: "Builder",
-      entity: "builder",
-      value: builder,
-    },
-    { root: true }
-  );
-};
+// export const createBuilder = (store) => {
+//   store.commit(
+//     SET_ENTITY,
+//     {
+//       module: "Builder",
+//       entity: "builder",
+//       value: builder,
+//     },
+//     { root: true }
+//   );
+// };

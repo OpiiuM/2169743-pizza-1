@@ -1,95 +1,70 @@
 <template>
-  <component
-    :is="tag"
-    :draggable="draggable"
-    :id="ingredientValue"
-    @dragstart="dragStart"
-    @dragover.stop
-  >
-    <span class="filling" :class="ingredientClass">
-      {{ label }}
-    </span>
+  <div class="ingredients__filling">
+    <p>Начинка:</p>
 
-    <AppItemCounter
-      class="ingredients__counter"
-      :value="countValue"
-      :max="3"
-      @change="changeCount"
-    />
-  </component>
+    <ul class="ingredients__list">
+      <li
+        v-for="ingredient in items"
+        :key="ingredient.id"
+        class="ingredients__item"
+      >
+        <AppDrag
+          :data-transfer="ingredient"
+          :draggable="values[ingredient.id] < MAX_INGREDIENT_COUNT"
+        >
+          <span class="filling" :class="`filling--${ingredient.value}`">
+            {{ ingredient.name }}
+          </span>
+        </AppDrag>
+
+        <AppCounter
+          class="ingredients__counter"
+          :value="values[ingredient.id]"
+          :min="0"
+          :max="MAX_INGREDIENT_COUNT"
+          @input="inputValue(ingredient.id, $event)"
+        />
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
-import { ingredientVal } from "@/common/helpers";
+import { MAX_INGREDIENT_COUNT } from "@/common/constants";
 
 export default {
   name: "BuilderIngredientsSelector",
 
   props: {
-    tag: {
-      type: String,
-      default: "div",
+    values: {
+      type: Object,
+      default: () => ({}),
     },
-
-    label: {
-      type: String,
-      required: true,
-      validator(value) {
-        return !!value.trim();
-      },
-    },
-
-    selected: {
+    items: {
       type: Array,
       default: () => [],
     },
-
-    draggable: {
-      type: Boolean,
-      default: false,
-    },
   },
 
-  computed: {
-    ingredientValue() {
-      return ingredientVal(this.label);
-    },
-
-    ingredientClass() {
-      return `filling--${this.ingredientValue}`;
-    },
-
-    countValue() {
-      let value = 0;
-
-      if (this.selected.length) {
-        this.selected.forEach((item) => {
-          if (item.name === this.label) {
-            value = item.quantity;
-          }
-        });
-      }
-
-      return value;
-    },
+  data() {
+    return {
+      MAX_INGREDIENT_COUNT,
+    };
   },
 
   methods: {
-    changeCount(state) {
-      const filling = {};
-      filling.name = this.label;
-      filling.value = this.ingredientValue;
-      filling.countState = state;
-
-      this.$emit("change", filling);
+    setValue(ingredient, count) {
+      this.$emit("update", {
+        ingredientId: ingredient,
+        count: Number(count),
+      });
     },
 
-    dragStart(e) {
-      const ingredient = {};
-      ingredient.name = this.label;
-      ingredient.value = this.ingredientValue;
-
-      e.dataTransfer.setData("ingredientData", JSON.stringify(ingredient));
+    inputValue(ingredient, count) {
+      return this.setValue(
+        ingredient,
+        Math.min(MAX_INGREDIENT_COUNT, Number(count))
+      );
     },
   },
 };

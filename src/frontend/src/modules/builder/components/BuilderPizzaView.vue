@@ -1,93 +1,51 @@
 <template>
-  <div
-    class="pizza"
-    :class="foundationClass"
-    data-test="pizza-wrapper"
-    @dragover.prevent
-    @drop.prevent="drop"
-  >
-    <div class="pizza__wrapper">
-      <transition-group
-        name="filling"
-        appear
-        enter-active-class="animate__animated animate__fadeIn"
-        leave-active-class="animate__animated animate__fadeOut"
-      >
-        <div
-          v-for="{ value, quantity } in ingredients"
-          :key="value"
-          class="pizza__filling"
-          :class="fillingClass(value, quantity)"
-        />
-      </transition-group>
-    </div>
+  <div class="content__constructor">
+    <AppDrop @drop="$emit('drop', $event.id)">
+      <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
+        <div class="pizza__wrapper">
+          <transition-group name="scale">
+            <div
+              v-for="item in ingredients"
+              :key="item.id"
+              class="pizza__filling"
+              :class="fillingClass(item)"
+            />
+          </transition-group>
+        </div>
+      </div>
+    </AppDrop>
   </div>
 </template>
 
 <script>
-import DOUGH from "@/common/enums/dough";
-import SAUCE from "@/common/enums/sauce";
+const TWO_INGREDIENTS = 2;
+const THREE_INGREDIENTS = 3;
 
 export default {
   name: "BuilderPizzaView",
 
   props: {
     dough: {
-      type: Object,
-      required: true,
+      type: String,
+      default: "",
     },
-
     sauce: {
-      type: Object,
-      required: true,
+      type: String,
+      default: "",
     },
-
-    size: {
-      type: Object,
-      required: true,
-    },
-
     ingredients: {
       type: Array,
       default: () => [],
     },
   },
 
-  computed: {
-    doughValue() {
-      return this.dough?.id === DOUGH.small ? "small" : "big";
-    },
-
-    sauceValue() {
-      return this.sauce?.id === SAUCE.tomato ? "tomato" : "creamy";
-    },
-
-    foundationClass() {
-      return `pizza--foundation--${this.doughValue}-${this.sauceValue}`;
-    },
-  },
-
   methods: {
-    fillingClass(name, time) {
-      let fillingClass = `pizza__filling--${name}`;
-
-      switch (time) {
-        case 2:
-          fillingClass += " pizza__filling--second";
-          break;
-        case 3:
-          fillingClass += " pizza__filling--third";
-          break;
-      }
-
-      return fillingClass;
-    },
-
-    drop(e) {
-      const dataItem = e.dataTransfer.getData("ingredientData");
-      // ! REMOVE
-      console.log(dataItem);
-      this.$emit("drop", dataItem);
+    fillingClass({ value, quantity }) {
+      return [
+        `pizza__filling--${value}`,
+        quantity === TWO_INGREDIENTS && "pizza__filling--second",
+        quantity === THREE_INGREDIENTS && "pizza__filling--third",
+      ];
     },
   },
 };

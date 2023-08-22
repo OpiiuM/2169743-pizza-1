@@ -136,7 +136,7 @@ import CartAdditionalSelector from "@/modules/cart/components/CartAdditionalSele
 
 import validator from "@/common/mixins/validator";
 
-import { pageCart } from "@/common/enums/inputConfig";
+import { pageCart } from "@/common/enums";
 import { SETUP_OPTIONS } from "@/common/enums/addressOptions";
 
 export default {

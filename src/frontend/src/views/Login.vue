@@ -42,7 +42,9 @@ import { mapActions } from "vuex";
 
 import validator from "@/common/mixins/validator";
 
-import { pageLogin } from "@/common/enums/inputConfig";
+import { inputConfig } from "@/common/enums";
+
+const { pageLogin } = inputConfig;
 
 export default {
   name: "Login",

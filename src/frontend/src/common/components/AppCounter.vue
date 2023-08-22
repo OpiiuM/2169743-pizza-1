@@ -3,9 +3,9 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
-      :disabled="value <= min"
-      @click="countHandler('decrease')"
       data-test="buttonMinus"
+      :disabled="value <= min"
+      @click="$emit('input', value - 1)"
     >
       <span class="visually-hidden">Меньше</span>
     </button>
@@ -19,10 +19,10 @@
     <button
       type="button"
       class="counter__button counter__button--plus"
-      :class="buttonClass"
+      :class="{ 'counter__button--orange': accent }"
       :disabled="value >= max"
-      @click="countHandler('increase')"
       data-test="buttonPlus"
+      @click="$emit('input', value + 1)"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -30,10 +30,8 @@
 </template>
 
 <script>
-const COLORS = ["orange"];
-
 export default {
-  name: "AppItemCounter",
+  name: "AppCounter",
 
   props: {
     value: {
@@ -51,27 +49,9 @@ export default {
       default: 99,
     },
 
-    color: {
-      type: String,
-      validator(value) {
-        return COLORS.includes(value);
-      },
-    },
-  },
-
-  computed: {
-    buttonClass() {
-      const modificator = `counter__button--${this.color}`;
-
-      return {
-        [modificator]: this.color,
-      };
-    },
-  },
-
-  methods: {
-    countHandler(state) {
-      this.$emit("change", state);
+    accent: {
+      type: Boolean,
+      default: false,
     },
   },
 };
